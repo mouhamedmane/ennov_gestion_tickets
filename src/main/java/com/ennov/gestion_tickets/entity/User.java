@@ -38,7 +38,7 @@ public class User {
     @Schema(description = "L'email de l'utilisateur doit être valide et ne peut pas être vide.  ", example="mouhamadou.mane@ennov.io")
     private String email;
 
-    @OneToMany(mappedBy = "utilisateur")
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
     @Schema(description = "La liste de tickets assignés à l'utilisateur")
     private List<Ticket> tickets;
 

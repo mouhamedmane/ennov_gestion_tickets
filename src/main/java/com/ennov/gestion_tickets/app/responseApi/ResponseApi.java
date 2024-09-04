@@ -1,4 +1,4 @@
-package com.ennov.gestion_tickets.responseApi;
+package com.ennov.gestion_tickets.app.responseApi;
 
 import lombok.*;
 
