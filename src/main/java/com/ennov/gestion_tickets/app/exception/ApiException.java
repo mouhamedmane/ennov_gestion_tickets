@@ -1,4 +1,4 @@
-package com.ennov.gestion_tickets.exception;
+package com.ennov.gestion_tickets.app.exception;
 
 
 import org.springframework.http.HttpStatus;

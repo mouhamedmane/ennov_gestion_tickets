@@ -1,11 +1,11 @@
-package com.ennov.gestion_tickets.exception;
+package com.ennov.gestion_tickets.app.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.validation.FieldError;
-import com.ennov.gestion_tickets.responseApi.ResponseApi;
+import com.ennov.gestion_tickets.app.responseApi.ResponseApi;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import java.util.HashMap;
