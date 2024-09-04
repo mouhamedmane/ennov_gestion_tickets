@@ -1,11 +1,13 @@
 package com.ennov.gestion_tickets.controller;
 
+import com.ennov.gestion_tickets.app.exception.ApiException;
 import com.ennov.gestion_tickets.dto.UserRequest;
 import com.ennov.gestion_tickets.dto.UserResponse;
 import com.ennov.gestion_tickets.dto.TicketResponse;
 import com.ennov.gestion_tickets.dto.UserUpdateRequest;
 import com.ennov.gestion_tickets.service.UserService;
 import com.ennov.gestion_tickets.app.responseApi.ResponseApi;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -30,8 +32,11 @@ public class UserController {
     public ResponseEntity<ResponseApi<List<UserResponse>>> getAllUsers() {
         try {
             List<UserResponse> users = userService.getAllUsers();
+            if (users.isEmpty()) {
+                return ResponseEntity.ok(ResponseApi.fail(List.of("Aucun utilisateur trouvé.")));
+            }
             return ResponseEntity.ok(ResponseApi.success(users));
-        } catch (Exception e) {
+        } catch (ApiException e) {
             return ResponseEntity.badRequest().body(ResponseApi.fail(List.of(e.getMessage())));
         }
     }
@@ -46,7 +51,7 @@ public class UserController {
         try {
             List<TicketResponse> tickets = userService.getTicketsByUserId(id);
             return ResponseEntity.ok(ResponseApi.success(tickets));
-        } catch (Exception e) {
+        } catch (ApiException e) {
             return ResponseEntity.badRequest().body(ResponseApi.fail(List.of(e.getMessage())));
         }
     }
@@ -54,11 +59,11 @@ public class UserController {
     @Operation(summary = "Créer un nouvel utilisateur")
     @ApiResponse(responseCode = "201", description = "Utilisateur créé avec succès")
     @PostMapping
-    public ResponseEntity<ResponseApi<UserResponse>> createUser(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<ResponseApi<UserResponse>> createUser(@Valid @RequestBody UserRequest userRequest) {
         try {
             UserResponse userResponse = userService.createUser(userRequest);
             return ResponseEntity.ok(ResponseApi.success(userResponse));
-        } catch (Exception e) {
+        } catch (ApiException e) {
             return ResponseEntity.badRequest().body(ResponseApi.fail(List.of(e.getMessage())));
         }
     }
@@ -73,7 +78,7 @@ public class UserController {
         try {
             UserResponse updatedUser = userService.updateUser(id, updateRequest);
             return ResponseEntity.ok(ResponseApi.success(updatedUser));
-        } catch (Exception e) {
+        } catch (ApiException e) {
             return ResponseEntity.badRequest().body(ResponseApi.fail(List.of(e.getMessage())));
         }
     }
