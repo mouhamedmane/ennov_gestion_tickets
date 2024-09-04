@@ -36,10 +36,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ResponseApi<Object>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        Throwable mostSpecificCause = ex.getMostSpecificCause();
+        String errorMessage = "La requête n'est pas lisible ou est malformée";
+        if (mostSpecificCause != null) {
+            errorMessage = mostSpecificCause.getMessage();
+            if (mostSpecificCause instanceof ApiException) {
+                errorMessage = mostSpecificCause.getMessage();
+            }
+        }
         return ResponseEntity
                 .badRequest()
-                .body(ResponseApi.fail(List.of("La requête n'est pas lisible ou est malformée")));
+                .body(ResponseApi.fail(List.of(errorMessage)));
     }
+
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ResponseApi<Object>> handleMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {

@@ -1,10 +1,12 @@
 package com.ennov.gestion_tickets.controller;
 
+import com.ennov.gestion_tickets.app.exception.ApiException;
 import com.ennov.gestion_tickets.dto.TicketRequest;
 import com.ennov.gestion_tickets.dto.TicketResponse;
 import com.ennov.gestion_tickets.dto.TicketUpdateRequest;
 import com.ennov.gestion_tickets.service.TicketService;
 import com.ennov.gestion_tickets.app.responseApi.ResponseApi;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tickets")
+@RequestMapping("/api/tickets")
 public class TicketController {
 
     private final TicketService ticketService;
@@ -29,8 +31,11 @@ public class TicketController {
     public ResponseEntity<ResponseApi<List<TicketResponse>>> getAllTickets() {
         try {
             List<TicketResponse> tickets = ticketService.getAllTickets();
+            if (tickets.isEmpty()) {
+                return ResponseEntity.ok(ResponseApi.fail(List.of("Aucun ticket trouvé.")));
+            }
             return ResponseEntity.ok(ResponseApi.success(tickets));
-        } catch (Exception e) {
+        } catch (ApiException e) {
             return ResponseEntity.badRequest().body(ResponseApi.fail(List.of(e.getMessage())));
         }
     }
@@ -45,7 +50,7 @@ public class TicketController {
         try {
             TicketResponse ticket = ticketService.getTicketById(id);
             return ResponseEntity.ok(ResponseApi.success(ticket));
-        } catch (Exception e) {
+        } catch (ApiException e) {
             return ResponseEntity.badRequest().body(ResponseApi.fail(List.of(e.getMessage())));
         }
     }
@@ -53,11 +58,11 @@ public class TicketController {
     @Operation(summary = "Créer un nouveau ticket")
     @ApiResponse(responseCode = "201", description = "Ticket créé avec succès")
     @PostMapping
-    public ResponseEntity<ResponseApi<TicketResponse>> createTicket(@RequestBody TicketRequest ticketRequest) {
+    public ResponseEntity<ResponseApi<TicketResponse>> createTicket(@Valid @RequestBody TicketRequest ticketRequest) {
         try {
             TicketResponse ticket = ticketService.createTicket(ticketRequest);
             return ResponseEntity.ok(ResponseApi.success(ticket));
-        } catch (Exception e) {
+        } catch (ApiException e) {
             return ResponseEntity.badRequest().body(ResponseApi.fail(List.of(e.getMessage())));
         }
     }
@@ -69,7 +74,7 @@ public class TicketController {
         try {
             TicketResponse updatedTicket = ticketService.updateTicket(id, ticketUpdateRequest);
             return ResponseEntity.ok(ResponseApi.success(updatedTicket));
-        } catch (Exception e) {
+        } catch (ApiException e) {
             return ResponseEntity.badRequest().body(ResponseApi.fail(List.of(e.getMessage())));
         }
     }
@@ -81,7 +86,7 @@ public class TicketController {
         try {
             TicketResponse assignedTicket = ticketService.assignTicketToUser(id, userId);
             return ResponseEntity.ok(ResponseApi.success(assignedTicket));
-        } catch (Exception e) {
+        } catch (ApiException e) {
             return ResponseEntity.badRequest().body(ResponseApi.fail(List.of(e.getMessage())));
         }
     }
@@ -96,7 +101,7 @@ public class TicketController {
         try {
             ticketService.deleteTicket(id);
             return ResponseEntity.ok(ResponseApi.success(null));
-        } catch (Exception e) {
+        } catch (ApiException e) {
             return ResponseEntity.badRequest().body(ResponseApi.fail(List.of(e.getMessage())));
         }
     }

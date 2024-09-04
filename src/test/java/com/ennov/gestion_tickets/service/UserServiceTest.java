@@ -43,7 +43,7 @@ class UserServiceTest {
         user.setUsername("mouhamadoumane");
         user.setEmail("mouhamadou.mane@ennov.io");
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        UserResponse expectedResponse = new UserResponse(userId, user.getUsername(), user.getEmail(), null);
+        UserResponse expectedResponse = new UserResponse(userId, user.getUsername(), user.getEmail());
         when(modelMapper.map(user, UserResponse.class)).thenReturn(expectedResponse);
 
         // Act
@@ -79,7 +79,7 @@ class UserServiceTest {
         when(userRepository.findByUsername(userRequest.getUsername())).thenReturn(Optional.empty());
         when(modelMapper.map(userRequest, User.class)).thenReturn(user);
         when(userRepository.save(user)).thenReturn(newUser);
-        when(modelMapper.map(newUser, UserResponse.class)).thenReturn(new UserResponse(1, "newuser", "newuser@example.com", null));
+        when(modelMapper.map(newUser, UserResponse.class)).thenReturn(new UserResponse(1, "newuser", "newuser@example.com"));
 
         // Act
         UserResponse result = userService.createUser(userRequest);
@@ -120,7 +120,7 @@ class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.findByUsername("newUsername")).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(modelMapper.map(any(User.class), eq(UserResponse.class))).thenReturn(new UserResponse(userId, "newUsername", "new@example.com", null));
+        when(modelMapper.map(any(User.class), eq(UserResponse.class))).thenReturn(new UserResponse(userId, "newUsername", "new@example.com"));
 
         // Act
         UserResponse result = userService.updateUser(userId, updateRequest);

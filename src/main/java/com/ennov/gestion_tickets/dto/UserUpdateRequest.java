@@ -1,6 +1,8 @@
 package com.ennov.gestion_tickets.dto;
 
 import com.ennov.gestion_tickets.app.exception.ApiException;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 
 import java.util.Optional;
@@ -11,10 +13,20 @@ public class UserUpdateRequest {
     private Optional<String> username;
     private Optional<String> email;
 
-    public UserUpdateRequest(Optional<String> username, Optional<String> email) {
+    public UserUpdateRequest() {
+        this.username = Optional.empty();
+        this.email = Optional.empty();
+    }
+
+    @JsonCreator
+    public UserUpdateRequest(
+            @JsonProperty("username") Optional<String> username,
+            @JsonProperty("email") Optional<String> email) {
         setUsername(username);
         setEmail(email);
     }
+
+
 
     public Optional<String> getUsername() {
         return username;
