@@ -19,6 +19,10 @@ public class UserResponse {
         this.tickets = tickets;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -29,6 +33,10 @@ public class UserResponse {
 
     public List<TicketResponse> getTickets() {
         return tickets;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setUsername(String username) {
